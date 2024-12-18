@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock title %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 py-8 px-4 rounded-md">
+    <!-- Search Form -->
+    <div class="max-w-4xl mx-auto">
+        <form method="GET" action="{% url 'engine:search' %}" class="relative mb-8">
+            {% csrf_token %}
+            <div class="backdrop-blur-lg bg-white/10 rounded-2xl p-4 shadow-lg border border-white/20">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        value="{{ request.GET.q }}" 
+                        placeholder="Search..." 
+                        class="flex-1 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                    >
+                    <button 
+                        type="submit" 
+                        class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition duration-200 transform hover:scale-105 hover:shadow-lg"
+                    >
+                        Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Search Results -->
+        <div class="space-y-6">
+            {% if request.GET.q %}
+                {% if page_obj %}
+                    <div class="text-white mb-6">
+                        <h2 class="text-2xl font-bold mb-2">Search Results for "{{ request.GET.q }}"</h2>
+                        <p class="text-gray-300">Found {{ page_obj.paginator.count }} results</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        {% for result in page_obj %}
+                            <div class="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-white/20 transition duration-300 hover:transform hover:scale-[1.02] hover:shadow-xl">
+                                <h5 class="text-xl font-semibold text-white mb-2">{{ result.title }}</h5>
+                                <p class="text-gray-300 mb-4">{{ result.description }}</p>
+                                {% if result.url %}
+                                    <button type="button">
+                                        <a 
+                                            href="{{ result.url }}" 
+                                            class="inline-flex items-center px-4 py-2 bg-blue-600/80 hover:bg-blue-700 text-white text-sm rounded-lg transition duration-200 hover:shadow-lg"
+                                            target="_blank"
+                                        >
+                                            View Details
+                                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                            </svg>
+                                        </a>
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        class='inline-flex items-center px-4 py-2 bg-purple-600/80 hover:bg-purple-700 text-white text-sm rounded-lg transition duration-200 hover:shadow-lg'
+                                        onclick='addBookmark("{{ result.title }}", "{{ result.url }}")'
+                                    >
+                                        Bookmark
+                                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                        </svg>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                        <div class="flex justify-center items-center space-x-2 mt-8">
+                            {% if page_obj.has_previous %}
+                                <a href="?q={{ request.GET.q }}&page=1" 
+                                   class="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition duration-200"
+                                   title="First Page">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                                    </svg>
+                                </a>
+                                <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}" 
+                                   class="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition duration-200"
+                                   title="Previous Page">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                    </svg>
+                                </a>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium">{{ num }}</span>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <a href="?q={{ request.GET.q }}&page={{ num }}" 
+                                       class="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition duration-200">
+                                        {{ num }}
+                                    </a>
+                                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                                    <span class="px-2 text-white">...</span>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}" 
+                                   class="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition duration-200"
+                                   title="Next Page">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                                <a href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}" 
+                                   class="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition duration-200"
+                                   title="Last Page">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7m-8-14l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            {% endif %}
+                            
+                            <div class="text-white text-sm ml-4">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="backdrop-blur-lg bg-white/10 rounded-xl p-6 border border-white/20">
+                        <p class="text-white text-center">No results found for "{{ request.GET.q }}"</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="backdrop-blur-lg bg-white/10 rounded-xl p-8 border border-white/20 text-center">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <p class="text-white text-lg">Enter a search term to see results</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function addBookmark(title, url) {
+        const bookmark = {
+            title: title,
+            url: url,
+        }
+        fetch('{% url "engine:add_bookmark" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify(bookmark),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+            return response.json()
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Bookmark added successfully')
+            } else {
+                alert(data.error || 'Error adding bookmark');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding bookmark');
+        });
+    }
+</script>
+{% endblock content %}

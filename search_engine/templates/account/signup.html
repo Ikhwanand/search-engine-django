@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Signup{% endblock title %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6">Register</h2>
+        
+
+        {% if form.errors %}
+            <div class="mb-4 p-4 rounded bg-red-100 text-red-700 border border-red-400">
+                <p class="font-bold">Please correct the following errors:</p>
+                <ul class="list-disc list-inside">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'account_signup' %}" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="id_username" class="block text-gray-700 font-bold">Username</label>
+                <input type="text" id="id_username" name="username" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md text-gray-900 {% if form.username.errors %}border-red-500{% endif %}" placeholder="Your username">
+                {% if form.username.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="id_email" class="block text-gray-700 font-bold">Email</label>
+                <input type="email" id="id_email" name="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md text-gray-900 {% if form.email.errors %}border-red-500{% endif %}" placeholder="Your email">
+                {% if form.email.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="id_password1" class="block text-gray-700 font-bold">Password</label>
+                <input type="password" id="id_password1" name="password1" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md text-gray-900 {% if form.password1.errors %}border-red-500{% endif %}" placeholder="Your password">
+                {% if form.password1.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="id_password2" class="block text-gray-700 font-bold">Password confirmation</label>
+                <input type="password" id="id_password2" name="password2" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md text-gray-900 {% if form.password2.errors %}border-red-500{% endif %}" placeholder="Confirm your password">
+                {% if form.password2.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+            <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Register</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

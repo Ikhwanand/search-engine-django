@@ -1,0 +1,129 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Search Engine{% endblock title %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        {% tailwind_preload_css %}
+        {% tailwind_css %}
+        {% block head %}{% endblock head %}
+    </head>
+    <body class="bg-gradient-to-br from-gray-900 via-indigo-900 to-black min-h-screen text-white">
+        <!-- Responsive Navigation -->
+        <nav class="backdrop-blur-lg bg-black/30 border-b border-white/10 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <a href="/" class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z" />
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z" clip-rule="evenodd" />
+                                </svg>
+                                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500">Search Engine</h1>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="flex items-center lg:hidden">
+                        <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" 
+                                class="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Desktop menu -->
+                    <div class="hidden lg:flex lg:items-center">
+                        <div class="flex space-x-4">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'engine:history' %}" class="text-white/80 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm font-medium flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                                </svg>
+                                <span>History</span>
+                            </a>
+                            <a href="{% url 'engine:bookmarks' %}" class="text-white/80 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm font-medium flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                                </svg>
+                                <span>Bookmarks</span>
+                            </a>
+							<a href="{% url 'engine:password_change' %}" class="text-white/80 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm font-medium flex items-center space-x-2">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+								</svg>
+								<span>Change Password</span>
+							</a>
+                            <a href="{% url 'account_logout' %}" class="text-white/80 hover:text-white px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 text-sm font-medium flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Logout</span>
+                            </a>
+
+                            {% else %}
+                            <a href="{% url 'account_login' %}" class="text-white px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 text-sm font-medium">Login</a>
+                            <a href="{% url 'account_signup' %}" class="text-white/80 hover:text-white px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition-all duration-300 text-sm font-medium">Register</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div class="lg:hidden hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1 backdrop-blur-lg bg-black/30">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'engine:history' %}" class="text-white/80 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10">History</a>
+                    <a href="{% url 'engine:bookmarks' %}" class="text-white/80 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10">Bookmarks</a>
+					<a href="{% url 'engine:password_change' %}" class="text-white/80 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10">Change Password</a>
+                    <a href="{% url 'account_logout' %}" class="text-white/80 hover:text-white block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10">Logout</a>
+                    {% else %}
+                    <a href="{% url 'account_login' %}" class="text-white block px-3 py-2 rounded-md text-base font-medium bg-indigo-600 hover:bg-indigo-700 text-center">Login</a>
+                    <a href="{% url 'account_signup' %}" class="text-white/80 hover:text-white block px-3 py-2 rounded-md text-base font-medium border border-white/20 hover:bg-white/10 text-center mt-2">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+		{% if messages %}
+        <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 space-y-4 w-full max-w-md mx-auto">
+            {% for message in messages %}
+                <div id="alert-{{ forloop.counter }}" class="relative p-4 rounded-lg shadow-lg backdrop-blur-lg flex items-center justify-between {% if message.tags == 'success' %}bg-green-100/90 text-green-700 border border-green-400{% else %}bg-red-100/90 text-red-700 border border-red-400{% endif %}">
+                    <div>{{ message }}</div>
+                    <button type="button" onclick="closeAlert('alert-{{ forloop.counter }}')" class="ml-4 inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-opacity-25 hover:bg-gray-600 focus:outline-none">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Main Content -->
+        <main class="py-10 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+		<script>
+			function closeAlert(alertId) {
+                const alert = document.getElementById(alertId);
+                if (alert) {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.3s ease-in-out';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                }
+            }
+		</script>
+    </body>
+</html>

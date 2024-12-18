@@ -1,0 +1,11 @@
+venv/
+.env
+core/__pycache__/
+search_engine/__pycache__/
+theme/__pycache__/
+search_engine/migrations/
+
+db.sqlite3
+
+__pycache__/
+.vscode/
