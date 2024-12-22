@@ -3,7 +3,6 @@
 # Install Python dependencies
 pip install -r requirements.txt
 
-source ./venv/bin/activate
 
 # Run Django migrations
 python manage.py migrate
