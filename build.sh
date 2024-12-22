@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Install Python dependencies
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Install Node.js dependencies
 cd theme/static_src/ 
@@ -13,9 +13,9 @@ cd ..
 cd ..
 
 # Run Django migrations
-python manage.py migrate
+python3 manage.py migrate
 
-python manage.py tailwind start
+python3 manage.py tailwind start
 
 # command to open another new terminal 
-gnome-terminal --tab --title="Django" -- bash -c "python manage.py runserver; exec bash"
+gnome-terminal --tab -- bash -c "python manage.py runserver; exec bash"
