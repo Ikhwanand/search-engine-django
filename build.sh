@@ -3,12 +3,17 @@
 # Install Python dependencies
 pip install -r requirements.txt
 
+# Install Node.js dependencies
+npm install
+
+# Start Tailwind CSS
+python manage.py tailwind start
 
 # Run Django migrations
 python manage.py migrate
 
-# Build your Django app (if needed, e.g., using a bundler or custom build process)
-python manage.py tailwind start
+# Collect static files
+python manage.py collectstatic --noinput
 
 # Run the Django development server
 python manage.py runserver
