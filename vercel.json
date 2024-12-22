@@ -12,6 +12,10 @@
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.13"
             }
+        },
+        {
+            "src": "package.json",
+            "use": "@vercel/node"
         }
     ],
     "routes": [
